@@ -180,6 +180,9 @@ Este projeto também pode ser utilizado como **base para sistemas corporativos d
 ## About de uma Empresa ficticia - Nexora Systems
 ![Atualização](./screenshots/about.png)
 
+## 🏗️ Arquitetura do Sistema (Diagrama)
+![Atualização](./screenshots/diagrama.png)
+
 ## 👨‍💻 Autor
 
 Projeto desenvolvido para fins de estudo, prática profissional e portfólio na área de desenvolvimento Full Stack.
