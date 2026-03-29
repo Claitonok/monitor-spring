@@ -1,0 +1,225 @@
+'use client';
+
+import { useState, useMemo } from "react";
+import { UsuarioResponse } from "../types/usuarioDados";
+import Link from "next/link";
+import { deleteUsuario } from "../utils/api";
+
+interface Usuario {
+  usuarioUsername: UsuarioResponse[];
+}
+
+export default function Monitor(props: Usuario) {
+
+  const usuarios = props.usuarioUsername || [];
+
+  const [busca, setBusca] = useState("");
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [ordenar, setOrdenar] = useState<keyof UsuarioResponse>("id");
+  const [direcao, setDirecao] = useState<"asc" | "desc">("asc");
+
+  const itensPorPagina = 5;
+
+  // FILTRO
+  const usuariosFiltrados = useMemo(() => {
+    return usuarios.filter((user) =>
+      user.nome.toLowerCase().includes(busca.toLowerCase()) ||
+      user.email.toLowerCase().includes(busca.toLowerCase())
+    );
+  }, [busca, usuarios]);
+
+  // ORDENAÇÃO
+  const usuariosOrdenados = useMemo(() => {
+    return [...usuariosFiltrados].sort((a, b) => {
+
+      const valorA = a[ordenar];
+      const valorB = b[ordenar];
+
+      if (valorA < valorB) return direcao === "asc" ? -1 : 1;
+      if (valorA > valorB) return direcao === "asc" ? 1 : -1;
+
+      return 0;
+    });
+  }, [usuariosFiltrados, ordenar, direcao]);
+
+  // PAGINAÇÃO
+  const totalPaginas = Math.ceil(usuariosOrdenados.length / itensPorPagina);
+
+  const usuariosPagina = usuariosOrdenados.slice(
+    (paginaAtual - 1) * itensPorPagina,
+    paginaAtual * itensPorPagina
+  );
+
+  function ordenarColuna(coluna: keyof UsuarioResponse) {
+
+    if (ordenar === coluna) {
+      setDirecao(direcao === "asc" ? "desc" : "asc");
+    } else {
+      setOrdenar(coluna);
+      setDirecao("asc");
+    }
+
+  }
+
+  //Metodo de deletar o usuario!
+   async function handleDelete(id: number) {
+    try {
+      await deleteUsuario(id);
+      alert("Usuário deletado");
+    } catch {
+      alert("Erro ao deletar usuário");
+    }
+  }
+
+  return (
+
+    <div className="w-full">
+
+      {/* BUSCA */}
+
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-3">
+
+        <input
+          type="text"
+          placeholder="Buscar usuário..."
+          value={busca}
+          onChange={(e) => {
+            setBusca(e.target.value)
+            setPaginaAtual(1)
+          }}
+          className="w-full md:w-72 rounded-lg border border-zinc-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-800 dark:border-zinc-700"
+        />
+
+        <span className="text-sm text-zinc-500">
+          {usuariosFiltrados.length} usuários
+        </span>
+
+      </div>
+
+      {/* TABELA */}
+
+      <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
+
+        <table className="w-full text-sm text-left">
+
+          <thead className="bg-zinc-100 dark:bg-zinc-800">
+
+            <tr className="text-zinc-700 dark:text-zinc-200">
+
+              <th
+                onClick={() => ordenarColuna("id")}
+                className="cursor-pointer px-4 py-3 hover:text-blue-500"
+              >
+                ID ↕
+              </th>
+
+              <th
+                onClick={() => ordenarColuna("nome")}
+                className="cursor-pointer px-4 py-3 hover:text-blue-500"
+              >
+                Nome ↕
+              </th>
+
+              <th
+                onClick={() => ordenarColuna("email")}
+                className="cursor-pointer px-4 py-3 hover:text-blue-500"
+              >
+                Email ↕
+              </th>
+
+              <th className="px-4 py-3">Senha</th>
+
+              <th className="px-4 py-3 text-center">
+                Ações
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody className="bg-white dark:bg-zinc-900">
+
+            {usuariosPagina.map((user) => (
+
+              <tr
+                key={user.id}
+                className="border-t border-zinc-200 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              >
+
+                <td className="px-4 py-3">{user.id}</td>
+
+                <td className="px-4 py-3 font-medium">
+                  {/* {user.nome} */}
+                  <input type="text" name="txtNome" placeholder={user.nome} id="" />
+                </td>
+
+                <td className="px-4 py-3 text-zinc-600 dark:text-zinc-300">
+                  <input type="email" name="txtEmail" placeholder={user.email} id="" />
+                </td>
+
+                <td className="px-4 py-3">
+                  {/* •••••••• */}
+                  <input type="password" name="txtSenha" placeholder={user.senha} id="" />
+                </td>
+
+                <td className="px-4 py-3">
+
+                  <div className="flex justify-center gap-2">
+
+                    <Link
+                      href={`/editar/${user.id}`}
+                      className="rounded-md bg-blue-500 px-3 py-1 text-xs text-white hover:bg-blue-600"
+                    >
+                      Editar
+                    </Link>
+
+                    <button onClick={() => handleDelete(user.id)}
+                      className="rounded-md bg-red-500 px-3 py-1 text-xs text-white hover:bg-red-600"
+                    >
+                      Excluir
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            ))}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      {/* PAGINAÇÃO */}
+
+      <div className="flex justify-center mt-6 gap-2">
+
+        <button
+          disabled={paginaAtual === 1}
+          onClick={() => setPaginaAtual(paginaAtual - 1)}
+          className="px-3 py-1 text-sm rounded-md border disabled:opacity-40"
+        >
+          Anterior
+        </button>
+
+        <span className="px-3 py-1 text-sm">
+          {paginaAtual} / {totalPaginas}
+        </span>
+
+        <button
+          disabled={paginaAtual === totalPaginas}
+          onClick={() => setPaginaAtual(paginaAtual + 1)}
+          className="px-3 py-1 text-sm rounded-md border disabled:opacity-40"
+        >
+          Próxima
+        </button>
+
+      </div>
+
+    </div>
+
+  );
+}
