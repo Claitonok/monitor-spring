@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { UsuarioResponse } from "../types/usuarioDados";
 import Link from "next/link";
 import { deleteUsuario } from "../utils/api";
+import { toast } from "sonner";
 
 interface Usuario {
   usuarioUsername: UsuarioResponse[];
@@ -65,9 +66,13 @@ export default function Monitor(props: Usuario) {
    async function handleDelete(id: number) {
     try {
       await deleteUsuario(id);
-      alert("Usuário deletado");
+      if (!id) {
+        toast.error("Usuário não encontrado ❌");
+        return;
+      }
+      toast.success("Usuário deletado com sucesso ✅");
     } catch {
-      alert("Erro ao deletar usuário");
+      toast.error("Erro ao deletar usuário ❌");
     }
   }
 

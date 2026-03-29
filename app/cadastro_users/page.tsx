@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createUsuario } from "../utils/api";
 import { NavbarCadastro } from "@/components/Navbar";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 
 export default function Cadastro() {
@@ -16,12 +17,23 @@ export default function Cadastro() {
     async function handleSubmit(e: any) {
         e.preventDefault()
 
+        if (!nome || !email || !senha) {
+            toast.error("Preencha todos os campos ❌");
+            return;
+        } else if (senha.length < 6) {
+            toast.error("A senha deve ter pelo menos 6 caracteres ❌");
+            return;
+        } else if (!email.includes("@")) {
+            toast.error("Email inválido ❌");
+            return;
+        }
+
         await createUsuario({
             nome,
             email,
             senha
         })
-        alert("Usuário criado com sucesso");
+        toast.success("Usuário criado com sucesso ✅");
         router.push("/monitor");
     }
 

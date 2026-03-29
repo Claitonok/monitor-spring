@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { updateUsuario } from "@/app/utils/api";
 import { UsuarioResponse } from "@/app/types/usuarioDados";
+import { toast } from "sonner";
 
 
 interface Props {
@@ -15,22 +16,30 @@ export default function EditarUsuarioForm({ usuario }: Props) {
 
   // 🔒 proteção contra null
   if (!usuario) {
-    return (
-      <div className="p-10 text-center">
-        Carregando usuário...
-      </div>
-    );
+    setTimeout(() => {
+      toast.error("Usuário não encontrado ❌");
+      redirect('/'); // redireciona para a página principal
+    }, 60);
   }
 
   const [nome, setNome] = useState(usuario.nome ?? "");
   const [email, setEmail] = useState(usuario.email ?? "");
   const [senha, setSenha] = useState(usuario.senha ?? "");
   
-  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-    setLoading(true);
+
+     if (!nome || !email || !senha) {
+            toast.error("Preencha todos os campos ❌");
+            return;
+        } else if (senha.length < 6) {
+            toast.error("A senha deve ter pelo menos 6 caracteres ❌");
+            return;
+        } else if (!email.includes("@")) {
+            toast.error("Email inválido ❌");
+            return;
+        }
 
     try {
       await updateUsuario(usuario.id, {
@@ -38,14 +47,15 @@ export default function EditarUsuarioForm({ usuario }: Props) {
         email,
         senha,
       });
+      toast.success("Usuário atualizado com sucesso ✅");
 
       router.push("/monitor");
       router.refresh(); // atualiza a lista
+
     } catch (error) {
-      alert("Erro ao atualizar usuário");
-    } finally {
-      setLoading(false);
+      toast.error("Erro ao atualizar usuário ❌");
     }
+
   }
 
   return (
@@ -95,10 +105,9 @@ export default function EditarUsuarioForm({ usuario }: Props) {
 
         <button
           type="submit"
-          disabled={loading}
           className="rounded-lg bg-blue-600 px-5 py-2 font-semibold text-white shadow hover:bg-blue-700 disabled:opacity-50"
         >
-          {loading ? "Salvando..." : "Salvar Alterações"}
+         Salvar Alterações
         </button>
       </div>
 
