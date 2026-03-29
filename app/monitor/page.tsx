@@ -8,11 +8,11 @@ import { cookies } from "next/headers";
 export default async function PageMonitor() {
   
   const response = await getUsuarios();
-  // const token = (await cookies()).get("token");
+  const token = (await cookies()).get("token");
 
-  // if (!token) {
-  //   redirect('/');
-  // }
+  if (!token) {
+    redirect('/');
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-linear-to-br from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-black">
