@@ -8,8 +8,7 @@ import { toast } from "sonner";
 
 
 export default function Cadastro() {
-
-
+    
     const [nome, setNome] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
