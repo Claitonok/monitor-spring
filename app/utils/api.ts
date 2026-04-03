@@ -1,7 +1,7 @@
 import { Usuario, UsuarioResponse} from "../types/usuarioDados";
 
 // const API_URL = "http://localhost:8080/usuarios"; My Localhost
-const API_URL = "monitor-production-b13a.up.railway.app/usuarios";
+const API_URL = "http://monitor-production-b13a.up.railway.app/usuarios";
 
 
 // 1️⃣ GET (buscar usuários)
@@ -21,7 +21,7 @@ export async function createUsuario(usuario: Usuario): Promise<Usuario> {
 
   try {
 
-    const response = await fetch("monitor-production-b13a.up.railway.app/usuarios", {
+    const response = await fetch("http://monitor-production-b13a.up.railway.app/usuarios", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
