@@ -17,7 +17,7 @@ import { useEffect } from "react";
 
 export default function Logout() {
   useEffect(() => {
-    document.cookie = "token=; Max-Age=0; path=/;";
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     window.location.href = "/login";
   }, []);
 
