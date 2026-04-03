@@ -1,10 +1,25 @@
+// 'use client';
+
+// import { redirect } from "next/navigation";
+
+// export default function Logout() {
+
+//     document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+//     redirect('/');
+
+// }
+
 'use client';
 
-import { redirect } from "next/navigation";
+export const dynamic = 'force-dynamic';
+
+import { useEffect } from "react";
 
 export default function Logout() {
+  useEffect(() => {
+    document.cookie = "token=; Max-Age=0; path=/;";
+    window.location.href = "/login";
+  }, []);
 
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    redirect('/');
-
+  return <p>Saindo...</p>;
 }
