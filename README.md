@@ -183,6 +183,10 @@ Este projeto também pode ser utilizado como **base para sistemas corporativos d
 ## 🏗️ Arquitetura do Sistema (Diagrama)
 ![Atualização](./screenshots/diagrama.png)
 
+## ✅ Deploy da API
+![Atualização](./screenshots/Deploy-da-API.png)
+
+
 ## 👨‍💻 Autor
 
 Projeto desenvolvido para fins de estudo, prática profissional e portfólio na área de desenvolvimento Full Stack.
