@@ -29,6 +29,9 @@ export default async function PageMonitor() {
             <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
                 Monitor System
             </h1>
+            <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                Bem-vindo ao Monitor System! Gerencie seus usuários com facilidade.
+            </span>
           </div>
 
           <Monitor usuarioUsername={response} />
