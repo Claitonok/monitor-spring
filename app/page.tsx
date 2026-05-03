@@ -11,6 +11,7 @@ export default function Home() {
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const [mostrarSenha, setMostrarSenha] = useState(false);
     const router = useRouter();
 
 
@@ -64,13 +65,26 @@ export default function Home() {
                              focus:ring-blue-500"
                         />
                         <input
-                            type="password"
+                            type={mostrarSenha ? "text" : "password"}
                             placeholder="Password"
                             value={senha}
                             onChange={(e) => setSenha(e.target.value)}
                             className="px-4 py-2 border rounded-md focus:outline-none 
                             focus:ring-2 focus:ring-blue-500"
                         />
+                        {/* Checkbox para mostrar senha */}
+                        <div className="flex items-center gap-2 -mt-2 mb-2">
+                            <input
+                                type="checkbox"
+                                id="show-password"
+                                checked={mostrarSenha}
+                                onChange={() => setMostrarSenha(!mostrarSenha)}
+                                className="cursor-pointer h-4 w-4"
+                            />
+                            <label htmlFor="show-password" className="text-sm cursor-pointer text-zinc-400 hover:text-white transition-colors">
+                                Mostrar senha
+                            </label>
+                        </div>
                         <button
                             type="submit"
                             className="bg-blue-600 px-4 py-2 text-sm font-medium
